@@ -7,6 +7,10 @@
     text-wrap: balance;
   }
 
+  body{
+    background-color: #ECECEC
+  }
+
 }
 
 @layer components {

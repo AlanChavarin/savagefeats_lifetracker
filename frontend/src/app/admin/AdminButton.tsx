@@ -5,7 +5,7 @@ import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons"
 import { useContext } from "react"
 import LifeCounterContext from "../context/LifeCounterContext"
 
-function Button({sign, player}: {sign: ("plus" | "minus"), player: (1 | 2)}) {
+function AdminButton({sign, player}: {sign: ("plus" | "minus"), player: (1 | 2)}) {
 
     const { incrementPlayer1Life, incrementPlayer2Life, decrementPlayer1Life, decrementPlayer2Life} = useContext(LifeCounterContext)
 
@@ -29,13 +29,11 @@ function Button({sign, player}: {sign: ("plus" | "minus"), player: (1 | 2)}) {
     }
 
   return (
-    <div onClick={() => onClick()} className="h-[50vh] w-full flex items-center justify-center hover:bg-slate-50 hover:bg-opacity-[10%] cursor-pointer">
-        <div className="w-[168px] h-[168px] bg-white rounded-full flex items-center justify-center box-shadow">
-            {sign === 'plus' && <FontAwesomeIcon icon={faPlus} className="w-[96px] h-[96px]" />}
-            {sign === 'minus' && <FontAwesomeIcon icon={faMinus} className="w-[96px] h-[96px]" />}
-        </div>
+    <div className="w-[108px] h-[108px] bg-white rounded-full flex items-center justify-center box-shadow cursor-pointer hover:bg-slate-200" onClick={() => onClick()}>
+        {sign === 'plus' && <FontAwesomeIcon icon={faPlus} className="w-[64px] h-[64px]" />}
+        {sign === 'minus' && <FontAwesomeIcon icon={faMinus} className="w-[64px] h-[64px]" />}
     </div>
     
   )
 }
-export default Button
+export default AdminButton

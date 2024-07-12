@@ -10,15 +10,18 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
-    "@fortawesome/react-fontawesome": "^0.2.2",
     "@fortawesome/free-brands-svg-icons": "^6.5.1",
     "@fortawesome/free-regular-svg-icons": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@hookform/resolvers": "^3.9.0",
     "@types/socket.io": "^3.0.2",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
-    "socket.io-client": "^4.7.5"
+    "react-hook-form": "^7.52.1",
+    "socket.io-client": "^4.7.5",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20",
