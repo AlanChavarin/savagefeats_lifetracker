@@ -56,7 +56,7 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
     const [player2Life, setPlayer2Life] = useState<number | undefined>(undefined)
 
     useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_SERVER}data/`)
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_APP}data/`)
         .then(r => r.json())
         .then(data => {
             const validatedData = responseSchema.safeParse(data)
