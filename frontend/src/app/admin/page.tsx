@@ -6,7 +6,7 @@ import useTimer from "../context/useTimer"
 import TimerForm from "./TimerForm"
 import TimerExtensionForm from "./TimerExtensionForm"
 
-function page() {
+function Admin() {
 
     const {player1Life, player2Life, reset, properTime, syncTime} = useContext(LifeCounterContext)
 
@@ -74,4 +74,4 @@ function page() {
     
   )
 }
-export default page
+export default Admin
