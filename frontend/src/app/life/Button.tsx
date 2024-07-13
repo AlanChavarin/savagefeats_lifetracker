@@ -30,9 +30,9 @@ function Button({sign, player}: {sign: ("plus" | "minus"), player: (1 | 2)}) {
 
   return (
     <div onClick={() => onClick()} className="h-[50vh] w-full flex items-center justify-center hover:bg-slate-50 hover:bg-opacity-[10%] cursor-pointer">
-        <div className="w-[168px] h-[168px] bg-white rounded-full flex items-center justify-center box-shadow">
-            {sign === 'plus' && <FontAwesomeIcon icon={faPlus} className="w-[96px] h-[96px]" />}
-            {sign === 'minus' && <FontAwesomeIcon icon={faMinus} className="w-[96px] h-[96px]" />}
+        <div className="w-[25vh] h-[25vh] max-w-[128px] max-h-[128px] md:max-w-[256px] md:max-h-[256px] bg-white rounded-full flex items-center justify-center box-shadow">
+            {sign === 'plus' && <FontAwesomeIcon icon={faPlus} className="w-[18vh] h-[18vh] max-w-[72px] md:max-w-[128px] md:max-h-[128px]" />}
+            {sign === 'minus' && <FontAwesomeIcon icon={faMinus} className="w-[18vh] h-[18vh] max-w-[72px] md:max-w-[128px] md:max-h-[128*px]" />}
         </div>
     </div>
     
