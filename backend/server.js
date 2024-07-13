@@ -17,8 +17,6 @@ let player1Life = 40
 let player2Life = 40
 let timeLeft = 0
 
-
-
 io.on('connection', socket => {
     console.log('a user connected: ' + socket.id)
 
@@ -39,30 +37,16 @@ io.on('connection', socket => {
         io.sockets.emit("updateTimer", timeLeft)
         console.log("timer updated with value: ", timeLeft)
     })
-})
 
-// setInterval(() => {
-//     if(timeLeft > 0){
-//         timeLeft--
-//         console.log(timeLeft)
-//         io.sockets.emit("updateTimer", timeLeft)
-//     }
-// }, 1000)
-
-app.listen("8081", () => {
-    console.log('App started on port ' + '8081')
-})
-
-app.get('/data/', async (req, res) => {
-    res.status(200)
-    res.json({
-        player1Life,
-        player2Life,
-        timer: timeLeft
+    socket.on('syncDataWithMe', () => {
+        console.log("newConnectionEvent")
+        socket.emit("updatePlayer1Life", player1Life)
+        socket.emit("updatePlayer2Life", player2Life)
+        //socket.emit("updateTimer", timeLeft)
     })
 })
 
-server.listen('8080', () => {
+server.listen(process.env.PORT, () => {
     console.log('Server started on port ' + '8080')
     //console.log('App is currently in ' + process.env.NODE_ENV + ' mode.')
 })

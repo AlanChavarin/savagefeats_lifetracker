@@ -2,7 +2,7 @@
 import { createContext, useState, useEffect, ReactNode} from 'react'
 import { z } from 'zod'
 import * as io from 'socket.io-client'
-const socket = io.connect(`${process.env.NEXT_PUBLIC_BACKEND_SERVER}`)
+const socket = io.connect(`${process.env.NEXT_PUBLIC_BACKEND}`)
 import useTimer from './useTimer'
 
 interface LifeCounterContextType {
@@ -56,21 +56,23 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
     const [player2Life, setPlayer2Life] = useState<number | undefined>(undefined)
 
     useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_APP}data/`)
-        .then(r => r.json())
-        .then(data => {
-            const validatedData = responseSchema.safeParse(data)
-            if(validatedData.success){
-                setPlayer1Life(validatedData.data.player1Life)
-                setPlayer2Life(validatedData.data.player2Life)
-                //setTimeLeft(validatedData.data.timer)
-            } else {
-                throw new Error('unexpected data')
-            }
-        })
-        .catch(error => {
-            console.error(error)
-        })
+        // fetch(`${process.env.NEXT_PUBLIC_BACKEND_APP}data/`)
+        // .then(r => r.json())
+        // .then(data => {
+        //     const validatedData = responseSchema.safeParse(data)
+        //     if(validatedData.success){
+        //         setPlayer1Life(validatedData.data.player1Life)
+        //         setPlayer2Life(validatedData.data.player2Life)
+        //         //setTimeLeft(validatedData.data.timer)
+        //     } else {
+        //         throw new Error('unexpected data')
+        //     }
+        // })
+        // .catch(error => {
+        //     console.error(error)
+        // })
+
+        socket.emit("syncDataWithMe")
     }, [])
 
     const reset = (life: number) => {
