@@ -1,8 +1,10 @@
 'use client'
 import Button from "./life/Button"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import LifeCounterContext from "./context/LifeCounterContext"
 import { Hourglass } from 'react-loader-spinner'
+import { faExpand, faUpRightAndDownLeftFromCenter } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 function LifeCounter() {
 
@@ -18,9 +20,21 @@ function LifeCounter() {
       }
     }
 
+    const [fullScreen, setFullScreen] = useState(false)
+
+    const fullscreenHandler = () => {
+      if(!fullScreen){
+        document.getElementById('page')?.requestFullscreen()
+        setFullScreen(true)
+      } else {
+        document.exitFullscreen()
+        setFullScreen(false)
+      }
+    }
+
   return (
 
-    <div className="relative touch-none">
+    <div className="relative touch-manipulation" id="page">
       <div className="flex relative">
           <div className="bg-[#B85E9F] flex-1 flex flex-col items-center justify-around">
               <Button sign="plus" player={1}/>
@@ -53,6 +67,11 @@ function LifeCounter() {
             wrapperClass=""
             colors={['Black', 'Black']} />
         </div>}
+
+
+        <div className="text-black absolute top-0 right-[50%] translate-x-[50%] text-[24px] cursor-pointer bg-white box-shadow-extra-small p-[4px] rounded-b-[4px] flex items-center justify-center" onClick={() => fullscreenHandler()}>
+          <FontAwesomeIcon icon={ faUpRightAndDownLeftFromCenter}/>
+        </div>
       
 
       {/* <div className="font-bold font-sans text-[19px] absolute left-0 top-0">

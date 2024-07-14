@@ -140,11 +140,9 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
             setTimeLeft(data)
         })
         socket.on("pauseTime", () => {
-            console.log("pausetime")
             setPause(true)
         })
         socket.on("resumeTime", () => {
-            console.log("resumetime")
             setPause(false)
         })
 

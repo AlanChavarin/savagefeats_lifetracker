@@ -12,10 +12,7 @@ const useTimer = () => {
     const [properTime, setProperTime] = useState('0:00')
     const [pause, setPause] = useState(false)
 
-    useEffect(() => {
-      console.log('from useTimer: pause value is:' + pause)
-    }, [pause])
-  
+
     useEffect(() => {
       // exit early when we reach 0
       setProperTime(calculateProperTime(timeLeft))
@@ -24,7 +21,6 @@ const useTimer = () => {
       // save intervalId to clear the interval when the
       // component re-renders
       const intervalId = setInterval(() => {
-        // console.log("from useTimer: pause: " + pause)
         if(!pause){
           setTimeLeft(timeLeft - 1);
         }
