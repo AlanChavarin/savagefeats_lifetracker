@@ -15,6 +15,10 @@ const config: Config = {
       },
     },
   },
+  fontFamily: {
+    custom: ['foulfiend', 'sans-serif'], // 'CustomFont' is the font name
+  },
   plugins: [],
 };
 export default config;
+

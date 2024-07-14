@@ -10,29 +10,34 @@ const useTimer = () => {
     // initialize timeLeft with the seconds prop
     const [timeLeft, setTimeLeft] = useState(0)
     const [properTime, setProperTime] = useState('0:00')
+    const [pause, setPause] = useState(false)
+
+    useEffect(() => {
+      console.log('from useTimer: pause value is:' + pause)
+    }, [pause])
   
     useEffect(() => {
       // exit early when we reach 0
       setProperTime(calculateProperTime(timeLeft))
       if (!timeLeft) return;
-
-      // set string time
-
-      
   
       // save intervalId to clear the interval when the
       // component re-renders
       const intervalId = setInterval(() => {
-        setTimeLeft(timeLeft - 1);
+        // console.log("from useTimer: pause: " + pause)
+        if(!pause){
+          setTimeLeft(timeLeft - 1);
+        }
+        
       }, 1000);
   
       // clear interval on re-render to avoid memory leaks
       return () => clearInterval(intervalId);
       // add timeLeft as a dependency to re-rerun the effect
       // when we update it
-    }, [timeLeft]);
+    }, [timeLeft, pause]);
   
-    return {timeLeft, setTimeLeft, properTime}
+    return {timeLeft, setTimeLeft, properTime, pause, setPause}
   };
 
   export default useTimer

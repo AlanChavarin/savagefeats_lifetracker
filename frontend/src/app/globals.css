@@ -13,6 +13,13 @@
 
 }
 
+@font-face {
+  font-family: 'DIN';
+  src: url('/fonts/DINAlternate-Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 @layer components {
   .text-shadow{
     text-shadow: 4px 4px 4px rgb(0, 0, 0, .3);
@@ -58,4 +65,8 @@
       box-shadow: 3px 3px 10px #4a915e;
   }
 
+}
+
+body {
+  font-family: 'DIN', sans-serif;
 }

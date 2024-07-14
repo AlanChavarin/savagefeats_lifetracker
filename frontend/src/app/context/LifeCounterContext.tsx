@@ -17,7 +17,10 @@ interface LifeCounterContextType {
     timer: number | undefined,
     properTime: string | undefined,
     addExtension: (time: number) => void,
-    syncTime: () => void
+    syncTime: () => void,
+    pauseTime: () => void,
+    resumeTime: () => void,
+    pause: boolean
 }
 
 let LifeCounterInitValues: LifeCounterContextType = {
@@ -32,7 +35,10 @@ let LifeCounterInitValues: LifeCounterContextType = {
     timer: 0,
     properTime: "",
     addExtension: (time: number) => null,
-    syncTime: () => null
+    syncTime: () => null,
+    pauseTime: () => null,
+    resumeTime: () => null,
+    pause: false
 }
 
 const LifeCounterContext = createContext<LifeCounterContextType>(LifeCounterInitValues)
@@ -50,28 +56,12 @@ const responseSchema = z.object({
 
 export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
 
-    const {timeLeft, setTimeLeft, properTime} = useTimer()
+    const {timeLeft, setTimeLeft, properTime, pause, setPause} = useTimer()
 
     const [player1Life, setPlayer1Life] = useState<number | undefined>(undefined)
     const [player2Life, setPlayer2Life] = useState<number | undefined>(undefined)
 
     useEffect(() => {
-        // fetch(`${process.env.NEXT_PUBLIC_BACKEND_APP}data/`)
-        // .then(r => r.json())
-        // .then(data => {
-        //     const validatedData = responseSchema.safeParse(data)
-        //     if(validatedData.success){
-        //         setPlayer1Life(validatedData.data.player1Life)
-        //         setPlayer2Life(validatedData.data.player2Life)
-        //         //setTimeLeft(validatedData.data.timer)
-        //     } else {
-        //         throw new Error('unexpected data')
-        //     }
-        // })
-        // .catch(error => {
-        //     console.error(error)
-        // })
-
         socket.emit("syncDataWithMe")
     }, [])
 
@@ -116,6 +106,14 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
         })
     }
 
+    const pauseTime = () => {
+        socket.emit('pauseTime')
+    }
+
+    const resumeTime = () => {
+        socket.emit('resumeTime')
+    }
+
     const setTime = (time: number) => {
         setTimeLeft(time)
         socket.emit("setTimer", time)
@@ -141,12 +139,20 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
         socket.on("updateTimer", (data) => {
             setTimeLeft(data)
         })
+        socket.on("pauseTime", () => {
+            console.log("pausetime")
+            setPause(true)
+        })
+        socket.on("resumeTime", () => {
+            console.log("resumetime")
+            setPause(false)
+        })
 
     }, [socket.on])
     
 
   return (
-    <LifeCounterContext.Provider value={{player1Life, player2Life, reset, incrementPlayer1Life, incrementPlayer2Life, decrementPlayer1Life, decrementPlayer2Life, timer: timeLeft, properTime, setTime, addExtension, syncTime}}>
+    <LifeCounterContext.Provider value={{player1Life, player2Life, reset, incrementPlayer1Life, incrementPlayer2Life, decrementPlayer1Life, decrementPlayer2Life, timer: timeLeft, properTime, setTime, addExtension, syncTime, pause, pauseTime, resumeTime}}>
         {children}
     </LifeCounterContext.Provider>
   )

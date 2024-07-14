@@ -16,6 +16,7 @@ const io = new Server(server, {
 let player1Life = 40
 let player2Life = 40
 let timeLeft = 0
+let pause = false
 
 io.on('connection', socket => {
     console.log('a user connected: ' + socket.id)
@@ -42,7 +43,24 @@ io.on('connection', socket => {
         console.log("newConnectionEvent")
         socket.emit("updatePlayer1Life", player1Life)
         socket.emit("updatePlayer2Life", player2Life)
+        if(pause){
+            socket.emit("pauseTime")
+        } else {
+            socket.emit("resumeTime")
+        }
         //socket.emit("updateTimer", timeLeft)
+    })
+
+    socket.on("pauseTime", () => {
+        console.log('pauseTime')
+        pause = true
+        io.sockets.emit('pauseTime')
+    })
+
+    socket.on("resumeTime", () => {
+        console.log('resumeTime')
+        pause = false
+        io.sockets.emit('resumeTime')
     })
 })
 

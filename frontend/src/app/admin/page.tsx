@@ -5,13 +5,37 @@ import AdminButton from "./AdminButton"
 import useTimer from "../context/useTimer"
 import TimerForm from "./TimerForm"
 import TimerExtensionForm from "./TimerExtensionForm"
+import { Hourglass } from "react-loader-spinner"
 
 function Admin() {
 
-    const {player1Life, player2Life, reset, properTime, syncTime} = useContext(LifeCounterContext)
+    const {player1Life, player2Life, reset, properTime, syncTime, pauseTime, pause, resumeTime} = useContext(LifeCounterContext)
+
+    const onClick = () => {
+        // pause time here 
+        if(!pause){
+          pauseTime()
+        }
+        if(pause){
+          resumeTime()
+        }
+      }
 
   return (
-    <div className="select-none w-[100vw] h-[100vh] flex flex-col gap-[16px] lg:gap-[64px] text-[32px] md:text-[64px]">
+    <div className="select-none w-[100vw] h-[100vh] flex flex-col gap-[16px] lg:gap-[64px] text-[32px] md:text-[64px] relative">
+
+        {(player1Life === undefined) && (player2Life === undefined) &&
+            <div className="absolute left-[50%] translate-x-[-50%] top-[50%] translate-y-[-50%]">
+            <Hourglass
+                visible={true}
+                height="80"
+                width="80"
+                ariaLabel="hourglass-loading"
+                wrapperStyle={{}}
+                wrapperClass=""
+                colors={['Black', 'Black']} />
+            </div>}
+
         <div className="flex justify-center items-center gap-[0px] flex-col lg:flex-row">
 
     
@@ -43,12 +67,18 @@ function Admin() {
                 <AdminButton sign="minus" player={2}/>
             </div>            
 
-            <div className="py-[24px] lg:py-[0px] lg:px-[128px] lg:min-h-[256px] bg-slate-50 h-full justify-center items-center text-shadow flex flex-row lg:flex-col gap-[32px] w-full lg:w-fit">
-                <div>
+            <div className="py-[24px] lg:py-[0px] lg:px-[128px] lg:min-h-[256px] bg-slate-50 h-full justify-center items-center text-shadow flex flex-row lg:flex-col gap-[32px] w-full lg:w-fit relative">
+                <div className={`${pause ? 'text-red-500' : 'text-black'}`}>
                     {properTime}
                 </div>
 
-                <button className="box-shadow px-[32px] bg-white hover:bg-slate-200 text-[24px] lg:text-[32px]" onClick={() => syncTime()}>Sync Time</button>
+                <div className="flex flex-col xl:flex-row gap-[32px]">
+                    <button className="text-nowrap box-shadow px-[32px] bg-white hover:bg-slate-200 text-[24px] lg:text-[32px]" onClick={() => syncTime()}>Sync Time</button>
+
+                    <button className={`box-shadow px-[32px] text-nowrap ${pause ? 'bg-red-200' : 'bg-white'} hover:bg-slate-200 text-[24px] lg:text-[32px]`} onClick={() => onClick()}>{pause ? 'Unpause Time' : 'Pause Time'}</button>
+                </div>
+
+                <div className="text-[13px] text-red-500 font-bold font-sans absolute bottom-0 left-[50%] translate-x-[-50%]">{pause && "TIME IS PAUSED"}</div>
             </div>
 
         </div>
@@ -69,6 +99,11 @@ function Admin() {
 
         <TimerForm />
         <TimerExtensionForm/>
+
+
+        {/* <div className="font-bold font-sans text-[19px] absolute left-0 top-0">
+            Instance: {process.env.NEXT_PUBLIC_INSTANCE}
+        </div> */}
 
     </div>
     
