@@ -20,7 +20,7 @@ function LifeCounter() {
       }
     }
 
-    const [fullScreen, setFullScreen] = useState(false)
+    const [fullScreen, setFullScreen] = useState(false) 
 
     const fullscreenHandler = () => {
       if(!fullScreen){
