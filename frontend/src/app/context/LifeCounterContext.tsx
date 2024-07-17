@@ -20,7 +20,9 @@ interface LifeCounterContextType {
     syncTime: () => void,
     pauseTime: () => void,
     resumeTime: () => void,
-    pause: boolean
+    pause: boolean,
+    startStopWatch: () => void,
+    stopWatchMode: boolean
 }
 
 let LifeCounterInitValues: LifeCounterContextType = {
@@ -38,7 +40,9 @@ let LifeCounterInitValues: LifeCounterContextType = {
     syncTime: () => null,
     pauseTime: () => null,
     resumeTime: () => null,
-    pause: false
+    pause: false,
+    startStopWatch: () => null,
+    stopWatchMode: false
 }
 
 const LifeCounterContext = createContext<LifeCounterContextType>(LifeCounterInitValues)
@@ -47,16 +51,10 @@ interface ProviderProps {
     children: ReactNode
 }
 
-const responseSchema = z.object({
-    player1Life: z.number(),
-    player2Life: z.number(),
-    timer: z.number()
-})
-
 
 export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
 
-    const {timeLeft, setTimeLeft, properTime, pause, setPause} = useTimer()
+    const {timeLeft, setTimeLeft, properTime, pause, setPause, stopWatchMode, setStopWatchMode} = useTimer()
 
     const [player1Life, setPlayer1Life] = useState<number | undefined>(undefined)
     const [player2Life, setPlayer2Life] = useState<number | undefined>(undefined)
@@ -115,8 +113,10 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
     }
 
     const setTime = (time: number) => {
+        setStopWatchMode(false)
         setTimeLeft(time)
         socket.emit("setTimer", time)
+        socket.emit("stopStopWatch")
     }
 
     const addExtension = (time: number) => {
@@ -127,6 +127,10 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
 
     const syncTime = () => {
         socket.emit("setTimer", timeLeft)
+    }
+
+    const startStopWatch = () => {
+        socket.emit("startStopWatch")
     }
 
     useEffect(() => {
@@ -145,12 +149,20 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
         socket.on("resumeTime", () => {
             setPause(false)
         })
+        socket.on("startStopWatch", () => {
+            setTimeLeft(0)
+            setStopWatchMode(true)
+        })
+        socket.on("stopStopWatch", () => {
+            setStopWatchMode(false)
+        })
+
 
     }, [socket.on])
     
 
   return (
-    <LifeCounterContext.Provider value={{player1Life, player2Life, reset, incrementPlayer1Life, incrementPlayer2Life, decrementPlayer1Life, decrementPlayer2Life, timer: timeLeft, properTime, setTime, addExtension, syncTime, pause, pauseTime, resumeTime}}>
+    <LifeCounterContext.Provider value={{player1Life, player2Life, reset, incrementPlayer1Life, incrementPlayer2Life, decrementPlayer1Life, decrementPlayer2Life, timer: timeLeft, properTime, setTime, addExtension, syncTime, pause, pauseTime, resumeTime, stopWatchMode, startStopWatch}}>
         {children}
     </LifeCounterContext.Provider>
   )

@@ -17,6 +17,7 @@ let player1Life = 40
 let player2Life = 40
 let timeLeft = 0
 let pause = false
+let stopWatchMode = false
 
 io.on('connection', socket => {
     console.log('a user connected: ' + socket.id)
@@ -37,6 +38,7 @@ io.on('connection', socket => {
         timeLeft = parseInt(data)
         io.sockets.emit("updateTimer", timeLeft)
         console.log("timer updated with value: ", timeLeft)
+        stopWatchMode = false
     })
 
     socket.on('syncDataWithMe', () => {
@@ -61,6 +63,18 @@ io.on('connection', socket => {
         console.log('resumeTime')
         pause = false
         io.sockets.emit('resumeTime')
+    })
+
+    socket.on("startStopWatch", () => {
+        console.log("startStopWatch")
+        stopWatchMode = true
+        io.sockets.emit("startStopWatch")
+    })
+
+    socket.on("stopStopWatch", () => {
+        console.log("stopStopWatch")
+        stopWatchMode = false
+        io.sockets.emit("stopStopWatch")
     })
 })
 

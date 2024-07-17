@@ -6,10 +6,11 @@ import useTimer from "../context/useTimer"
 import TimerForm from "./TimerForm"
 import TimerExtensionForm from "./TimerExtensionForm"
 import { Hourglass } from "react-loader-spinner"
+import StopWatchForm from "./StopWatchForm"
 
 function Admin() {
 
-    const {player1Life, player2Life, reset, properTime, syncTime, pauseTime, pause, resumeTime} = useContext(LifeCounterContext)
+    const {player1Life, player2Life, reset, properTime, syncTime, pauseTime, pause, resumeTime, stopWatchMode} = useContext(LifeCounterContext)
 
     const onClick = () => {
         // pause time here 
@@ -65,7 +66,7 @@ function Admin() {
                 <AdminButton sign="plus" player={2}/>
                 <div className="text-[96px] text-shadow">{player2Life}</div>
                 <AdminButton sign="minus" player={2}/>
-            </div>            
+            </div>
 
             <div className="py-[24px] lg:py-[0px] lg:px-[128px] lg:min-h-[256px] bg-slate-50 h-full justify-center items-center text-shadow flex flex-row lg:flex-col gap-[32px] w-full lg:w-fit relative">
                 <div className={`${pause ? 'text-red-500' : 'text-black'}`}>
@@ -79,6 +80,8 @@ function Admin() {
                 </div>
 
                 <div className="text-[13px] text-red-500 font-bold font-sans absolute bottom-0 left-[50%] translate-x-[-50%]">{pause && "TIME IS PAUSED"}</div>
+
+                <div className="text-[13px] font-bold font-sans absolute bottom-[16px] left-[50%] translate-x-[-50%]">{stopWatchMode && "Stop Watch Active"}</div>
             </div>
 
         </div>
@@ -99,6 +102,7 @@ function Admin() {
 
         <TimerForm />
         <TimerExtensionForm/>
+        <StopWatchForm />
 
 
         {/* <div className="font-bold font-sans text-[19px] absolute left-0 top-0">
