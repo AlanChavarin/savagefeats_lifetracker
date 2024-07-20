@@ -8,13 +8,13 @@ function Output() {
 
   return (
     <div className="text-white font-bold text-[128px] w-[100vw] h-[100vh] ">
-        <div>
+        <div className="flex justify-center">
             {player1Life}
         </div>
-        <div>
+        <div className="flex justify-center">
             {player2Life}
         </div>
-        <div>
+        <div className="flex justify-center">
             {properTime}
         </div>
     </div>

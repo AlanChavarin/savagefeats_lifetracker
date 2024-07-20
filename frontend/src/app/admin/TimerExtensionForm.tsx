@@ -26,7 +26,6 @@ function TimerExtensionForm() {
 
     const { register, handleSubmit, setValue, getValues, reset, watch, resetField, formState: {errors, isSubmitting}} = form
 
-
     const onSubmit: SubmitHandler<FormFields> = async (data) => { 
         console.log(data)
         const fullTimeInSeconds = data.minutes*60 + data.seconds
