@@ -15,9 +15,15 @@ const io = new Server(server, {
 
 let player1Life = 40
 let player2Life = 40
-let timeLeft = 0
 let pause = false
 let stopWatchMode = false
+
+let time = {
+    minutes: 55,
+    seconds: 0,
+    startTime: new Date((55*60+0)*1000),
+    referenceDate: new Date()
+}
 
 io.on('connection', socket => {
     console.log('a user connected: ' + socket.id)
@@ -35,10 +41,12 @@ io.on('connection', socket => {
     })
 
     socket.on("setTimer", (data) => {
-        timeLeft = parseInt(data)
-        io.sockets.emit("updateTimer", timeLeft)
-        console.log("timer updated with value: ", timeLeft)
+        time.minutes = Math.floor(parseInt(data)/60)
+        time.seconds = Math.floor(parseInt(data)%60)
+        time.referenceDate = new Date()
+        time.startTime = new Date((time.minutes*60+time.seconds)*1000)
         stopWatchMode = false
+        io.sockets.emit("updateTimer", (time.seconds + time.minutes*60))
     })
 
     socket.on('syncDataWithMe', () => {
@@ -56,18 +64,31 @@ io.on('connection', socket => {
     socket.on("pauseTime", () => {
         console.log('pauseTime')
         pause = true
+
+        //capture time at pause
+        time.startTime = new Date((time.minutes*60 + time.seconds)*1000)
+
         io.sockets.emit('pauseTime')
     })
 
     socket.on("resumeTime", () => {
         console.log('resumeTime')
         pause = false
+
+        //set new reference date
+        time.referenceDate = new Date()
+
         io.sockets.emit('resumeTime')
     })
 
     socket.on("startStopWatch", () => {
         console.log("startStopWatch")
         stopWatchMode = true
+        time.minutes = 0
+        time.seconds = 0
+        time.referenceDate = new Date()
+        time.startTime = new Date(0)
+        io.sockets.emit("updateTimer", (time.seconds + time.minutes*60))
         io.sockets.emit("startStopWatch")
     })
 
@@ -76,7 +97,46 @@ io.on('connection', socket => {
         stopWatchMode = false
         io.sockets.emit("stopStopWatch")
     })
+   
 })
+
+const countDownTime = () => {
+        if(!pause){
+            if(!stopWatchMode){
+                if(time.minutes || time.seconds){
+                    const date = new Date()
+                    const dateDifference = new Date(date.getTime() - time.referenceDate.getTime())
+                    const finalTimeSum = new Date(time.startTime.getTime() - dateDifference.getTime())
+                    //console.log(`${finalTimeSum.getUTCHours()*60 + finalTimeSum.getMinutes()}:${finalTimeSum.getSeconds()}`)
+                    time.seconds = finalTimeSum.getSeconds()
+                    time.minutes = finalTimeSum.getUTCHours()*60 + finalTimeSum.getMinutes()
+                    console.log(`${time.minutes}:${time.seconds}`)
+                    io.sockets.emit("updateTimer", (time.seconds + time.minutes*60))
+                }
+            } else {
+                const date = new Date()
+                const dateDifference = new Date(date.getTime() - time.referenceDate.getTime())
+                const finalTimeSum = new Date(time.startTime.getTime() + dateDifference.getTime())
+                console.log(`${finalTimeSum.getUTCHours()*60 + finalTimeSum.getMinutes()}:${finalTimeSum.getSeconds()}`)
+                time.seconds = finalTimeSum.getSeconds()
+                time.minutes = finalTimeSum.getUTCHours()*60 + finalTimeSum.getMinutes()
+                io.sockets.emit("updateTimer", (time.seconds + time.minutes*60))
+            }
+        }
+    }
+
+setInterval(countDownTime, 1000)
+
+// time.seconds = 10
+// time.minutes = 120
+// time.startTime = new Date((time.minutes*60+time.seconds)*1000)
+
+// time.referenceDate = new Date()
+
+
+
+
+
 
 server.listen(process.env.PORT, () => {
     console.log('Server started on port ' + '8080')

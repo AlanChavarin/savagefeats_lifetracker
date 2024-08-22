@@ -3,12 +3,12 @@ import Button from "./life/Button"
 import { useContext, useState } from "react"
 import LifeCounterContext from "./context/LifeCounterContext"
 import { Hourglass } from 'react-loader-spinner'
-import { faExpand, faUpRightAndDownLeftFromCenter } from "@fortawesome/free-solid-svg-icons"
+import { faExpand, faUpRightAndDownLeftFromCenter, faClock } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 function LifeCounter() {
 
-    const {player1Life, player2Life, properTime, pause, pauseTime, resumeTime } = useContext(LifeCounterContext)
+    const {player1Life, player2Life, properTime, pause, pauseTime, resumeTime, stopWatchMode } = useContext(LifeCounterContext)
 
     const onClick = () => {
       // pause time here 
@@ -52,8 +52,14 @@ function LifeCounter() {
         {properTime}
       </div>
 
-      <div className="absolute bottom-0 left-[50%] translate-x-[-50%] pointer-events-none font-sans font-bold text-[19px] text-red-500">
-        {pause && "TIME IS PAUSED"}
+      <div className="absolute bottom-0 left-[50%] translate-x-[-50%] flex gap-[16px]">
+        <div className=" pointer-events-none font-sans font-bold text-[16px] text-black">
+          {stopWatchMode && <><FontAwesomeIcon icon={faClock}/>&nbsp; STOPWATCH MODE ACTIVE</>}
+        </div>
+
+        <div className=" pointer-events-none font-sans font-bold text-[16px] text-red-500">
+          {pause && "TIME IS PAUSED"}
+        </div>
       </div>
 
       {(player1Life === undefined) && (player2Life === undefined) &&

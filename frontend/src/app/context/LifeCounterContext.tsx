@@ -17,7 +17,7 @@ interface LifeCounterContextType {
     timer: number | undefined,
     properTime: string | undefined,
     addExtension: (time: number) => void,
-    syncTime: () => void,
+    //syncTime: () => void,
     pauseTime: () => void,
     resumeTime: () => void,
     pause: boolean,
@@ -37,7 +37,7 @@ let LifeCounterInitValues: LifeCounterContextType = {
     timer: 0,
     properTime: "",
     addExtension: (time: number) => null,
-    syncTime: () => null,
+    //syncTime: () => null,
     pauseTime: () => null,
     resumeTime: () => null,
     pause: false,
@@ -125,9 +125,9 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
         socket.emit("setTimer", newTime)
     }
 
-    const syncTime = () => {
-        socket.emit("setTimer", timeLeft)
-    }
+    // const syncTime = () => {
+    //     socket.emit("setTimer", timeLeft)
+    // }
 
     const startStopWatch = () => {
         socket.emit("startStopWatch")
@@ -162,7 +162,7 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
     
 
   return (
-    <LifeCounterContext.Provider value={{player1Life, player2Life, reset, incrementPlayer1Life, incrementPlayer2Life, decrementPlayer1Life, decrementPlayer2Life, timer: timeLeft, properTime, setTime, addExtension, syncTime, pause, pauseTime, resumeTime, stopWatchMode, startStopWatch}}>
+    <LifeCounterContext.Provider value={{player1Life, player2Life, reset, incrementPlayer1Life, incrementPlayer2Life, decrementPlayer1Life, decrementPlayer2Life, timer: timeLeft, properTime, setTime, addExtension, pause, pauseTime, resumeTime, stopWatchMode, startStopWatch}}>
         {children}
     </LifeCounterContext.Provider>
   )

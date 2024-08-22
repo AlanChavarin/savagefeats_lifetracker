@@ -10,7 +10,7 @@ import StopWatchForm from "./StopWatchForm"
 
 function Admin() {
 
-    const {player1Life, player2Life, reset, properTime, syncTime, pauseTime, pause, resumeTime, stopWatchMode} = useContext(LifeCounterContext)
+    const {player1Life, player2Life, reset, properTime, pauseTime, pause, resumeTime, stopWatchMode} = useContext(LifeCounterContext)
 
     const onClick = () => {
         // pause time here 
@@ -74,7 +74,7 @@ function Admin() {
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-[32px]">
-                    <button className="text-nowrap box-shadow px-[32px] bg-white hover:bg-slate-200 text-[24px] lg:text-[32px]" onClick={() => syncTime()}>Sync Time</button>
+                    {/* <button className="text-nowrap box-shadow px-[32px] bg-white hover:bg-slate-200 text-[24px] lg:text-[32px]" onClick={() => syncTime()}>Sync Time</button> */}
 
                     <button className={`box-shadow px-[32px] text-nowrap ${pause ? 'bg-red-200' : 'bg-white'} hover:bg-slate-200 text-[24px] lg:text-[32px]`} onClick={() => onClick()}>{pause ? 'Unpause Time' : 'Pause Time'}</button>
                 </div>
