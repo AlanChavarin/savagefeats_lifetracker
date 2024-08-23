@@ -7,20 +7,22 @@ import { zodResolver } from "@hookform/resolvers/zod"
 
 const formSchema = z.object({
     minutes: z.coerce.number().min(0).max(99),
-    seconds: z.coerce.number().min(0).max(59)
+    seconds: z.coerce.number().min(0).max(59),
+    mode: z.enum(['Set', 'Add'])
 })
 
 type FormFields = z.infer<typeof formSchema>
 
 function TimerForm() {
 
-    const {setTime} = useContext(LifeCounterContext)
+    const {setTime, addExtension} = useContext(LifeCounterContext)
 
     const form = useForm<FormFields>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             minutes: 55,
-            seconds: 0
+            seconds: 0,
+            mode: 'Set'
         }
     })
 
@@ -29,17 +31,18 @@ function TimerForm() {
 
     const onSubmit: SubmitHandler<FormFields> = async (data) => { 
         console.log(data)
-        const fullTimeInSeconds = data.minutes*60 + data.seconds
-        setTime(fullTimeInSeconds)
-    }
-
-    const onClick = () => {
-        reset()
-        setTime(0)
+        
+        if(getValues('mode') === 'Set'){
+            const fullTimeInSeconds = data.minutes*60 + data.seconds
+            setTime(fullTimeInSeconds)
+        } else if (getValues('mode') === 'Add'){
+            const fullTimeInSeconds = data.minutes*60 + data.seconds
+            addExtension(fullTimeInSeconds)
+        }
     }
 
   return (
-    <form className="flex gap-[16px] items-center lg:gap-[32px] justify-center flex-col lg:flex-row" onSubmit={handleSubmit(onSubmit)}> 
+    <form className="flex gap-[16px] items-start lg:gap-[32px] justify-start flex-col lg:flex-row" onSubmit={handleSubmit(onSubmit)}> 
         
         {Object.keys(errors).map((key) => {
           // @ts-ignore
@@ -51,10 +54,6 @@ function TimerForm() {
           )
         })}
 
-        <div className="self-start">
-            Timer: 
-        </div>
-
 
         <div className=" w-[164px] md:w-[300px] border-[1px] border-[#C0C0C0] rounded-[16px] bg-white flex flex-row items-center justify-center box-shadow-extra-small">
             <input {...register('minutes')} type="number" name="minutes" className="text-center w-[64px] md:w-[128px] outline-none" placeholder="55" min="0" max="99"/>
@@ -65,21 +64,21 @@ function TimerForm() {
         </div>
         
 
-        <button type="submit" className="bg-white hover:bg-slate-100 px-[32px] box-shadow hidden lg:block">
-            Start
+        <button type="submit" onClick={() => {setValue('mode', 'Set')}} className="bg-white hover:bg-slate-100 px-[32px] box-shadow hidden lg:block">
+            Set
         </button>
 
-        <button type="button" onClick={() => onClick()} className="bg-white hover:bg-slate-100 px-[32px] box-shadow hidden lg:block">
-            Reset
+        <button type="submit" onClick={() => {setValue('mode', 'Add')}} className="bg-white hover:bg-slate-100 px-[32px] box-shadow hidden lg:block">
+            Add
         </button>
 
-        <div className="lg:hidden flex flex-row gap-[24px]"> 
-            <button type="submit" className="bg-white hover:bg-slate-100 px-[32px] box-shadow">
-                Start
+        <div className="lg:hidden flex flex-row gap-[16px]"> 
+            <button type="submit" onClick={() => {setValue('mode', 'Set')}} className="bg-white hover:bg-slate-100 px-[32px] box-shadow">
+                Set
             </button>
 
-            <button type="button" onClick={() => onClick()} className="bg-white hover:bg-slate-100 px-[32px] box-shadow">
-                Reset
+            <button type="submit" onClick={() => {setValue('mode', 'Add')}} className="bg-white hover:bg-slate-100 px-[32px] box-shadow">
+                Add
             </button>
         </div>
 

@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useState, useEffect, ReactNode} from 'react'
+import { createContext, useState, useEffect, ReactNode, useRef} from 'react'
 import { z } from 'zod'
 import * as io from 'socket.io-client'
 const socket = io.connect(`${process.env.NEXT_PUBLIC_BACKEND}`)
@@ -8,11 +8,13 @@ import useTimer from './useTimer'
 interface LifeCounterContextType {
     player1Life: number | undefined,
     player2Life: number | undefined,
+    player1LifeChange: number,
+    player2LifeChange: number,
     reset: (life: number) => void,
-    incrementPlayer1Life: () => void,
-    incrementPlayer2Life: () => void,
-    decrementPlayer1Life: () => void,
-    decrementPlayer2Life: () => void,
+    incrementPlayer1Life: (num: number) => void,
+    incrementPlayer2Life: (num: number) => void,
+    decrementPlayer1Life: (num: number) => void,
+    decrementPlayer2Life: (num: number) => void,
     setTime: (time: number) => void,
     timer: number | undefined,
     properTime: string | undefined,
@@ -22,17 +24,20 @@ interface LifeCounterContextType {
     resumeTime: () => void,
     pause: boolean,
     startStopWatch: () => void,
+    stopStopWatch: () => void,
     stopWatchMode: boolean
 }
 
 let LifeCounterInitValues: LifeCounterContextType = {
     player1Life: 40,
     player2Life: 40,
+    player1LifeChange: 0,
+    player2LifeChange: 0,
     reset: (life: number) => null,
-    incrementPlayer1Life: () => null,
-    incrementPlayer2Life: () => null,
-    decrementPlayer1Life: () => null,
-    decrementPlayer2Life: () => null,
+    incrementPlayer1Life: (num: number) => null,
+    incrementPlayer2Life: (num: number) => null,
+    decrementPlayer1Life: (num: number) => null,
+    decrementPlayer2Life: (num: number) => null,
     setTime: (time: number) => null,
     timer: 0,
     properTime: "",
@@ -42,6 +47,7 @@ let LifeCounterInitValues: LifeCounterContextType = {
     resumeTime: () => null,
     pause: false,
     startStopWatch: () => null,
+    stopStopWatch: () => null,
     stopWatchMode: false
 }
 
@@ -59,6 +65,9 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
     const [player1Life, setPlayer1Life] = useState<number | undefined>(undefined)
     const [player2Life, setPlayer2Life] = useState<number | undefined>(undefined)
 
+    const [player1LifeChange, setPlayer1LifeChange] = useState<number>(0)
+    const [player2LifeChange, setPlayer2LifeChange] = useState<number>(0)
+
     useEffect(() => {
         socket.emit("syncDataWithMe")
     }, [])
@@ -71,37 +80,45 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
         
     }
 
-    const incrementPlayer1Life = () => {
+    const incrementPlayer1Life = (num: number) => {
         setPlayer1Life(prev => {
-            const newValue = (prev ? prev : 0) + 1
+            const newValue = (prev ? prev : 0) + num
             socket.emit('updatePlayer1Life', newValue)
             return newValue
         })
+
+        setPlayer1LifeChange(prev => prev + num)
         
     }
 
-    const incrementPlayer2Life = () => {
+    const incrementPlayer2Life = (num: number) => {
         setPlayer2Life(prev => {
-            const newValue = (prev ? prev : 0) + 1
+            const newValue = (prev ? prev : 0) + num
             socket.emit('updatePlayer2Life', newValue)
             return newValue
         })
+
+        setPlayer2LifeChange(prev => prev + num)
     }
 
-    const decrementPlayer1Life = () => {
+    const decrementPlayer1Life = (num: number) => {
         setPlayer1Life(prev => {
-            const newValue = (prev ? prev : 0) - 1
+            const newValue = (prev ? prev : 0) - num
             socket.emit('updatePlayer1Life', newValue)
             return newValue
         })
+
+        setPlayer1LifeChange(prev => prev - num)
     }
 
-    const decrementPlayer2Life = () => {
+    const decrementPlayer2Life = (num: number) => {
         setPlayer2Life(prev => {
-            const newValue = (prev ? prev : 0) - 1
+            const newValue = (prev ? prev : 0) - num
             socket.emit('updatePlayer2Life', newValue)
             return newValue
         })
+
+        setPlayer2LifeChange(prev => prev - num)
     }
 
     const pauseTime = () => {
@@ -113,10 +130,10 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
     }
 
     const setTime = (time: number) => {
-        setStopWatchMode(false)
+        // setStopWatchMode(false)
         setTimeLeft(time)
         socket.emit("setTimer", time)
-        socket.emit("stopStopWatch")
+        //socket.emit("stopStopWatch")
     }
 
     const addExtension = (time: number) => {
@@ -131,6 +148,10 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
 
     const startStopWatch = () => {
         socket.emit("startStopWatch")
+    }
+
+    const stopStopWatch = () => {
+        socket.emit("stopStopWatch")
     }
 
     useEffect(() => {
@@ -150,7 +171,6 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
             setPause(false)
         })
         socket.on("startStopWatch", () => {
-            setTimeLeft(0)
             setStopWatchMode(true)
         })
         socket.on("stopStopWatch", () => {
@@ -159,10 +179,98 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
 
 
     }, [socket.on])
+
+
+    const timeoutRef = useRef<number | null>(null)
+    const lastValueRef = useRef<string>('')
+
+    useEffect(() => {
+        // Clear the existing timeout
+        // @ts-ignore
+        if (timeoutRef.current !== null) {
+            // @ts-ignore
+          clearTimeout(timeoutRef.current)
+        }
+    
+        // If the value has changed, update lastValueRef
+        // @ts-ignore
+        if (player2LifeChange !== lastValueRef.current) {
+            // @ts-ignore
+          lastValueRef.current = player2LifeChange
+        }
+    
+        // Set a new timeout
+        // @ts-ignore
+        timeoutRef.current = window.setTimeout(() => {
+          // Check if the value hasn't changed in the last 5 seconds
+          // @ts-ignore
+          if (player2LifeChange === lastValueRef.current) {
+            // @ts-ignore
+            //console.log('Value remained unchanged for 5 seconds:', player2LifeChange)
+            // Your event logic here
+            setPlayer2LifeChange(0)
+          }
+        }, 1600)
+    
+        // Cleanup function
+        return () => {
+            // @ts-ignore
+          if (timeoutRef.current !== null) {
+            // @ts-ignore
+            clearTimeout(timeoutRef.current)
+          }
+        }
+        
+      }, [player2LifeChange])
+
+
+        const timeoutRef1 = useRef<number | null>(null)
+        const lastValueRef1 = useRef<string>('')
+
+      useEffect(() => {
+        // Clear the existing timeout
+        // @ts-ignore
+        if (timeoutRef1.current !== null) {
+            // @ts-ignore
+          clearTimeout(timeoutRef1.current)
+        }
+    
+        // If the value has changed, update lastValueRef
+        // @ts-ignore
+        if (player1LifeChange !== lastValueRef1.current) {
+            // @ts-ignore
+          lastValueRef1.current = player1LifeChange
+        }
+    
+        // Set a new timeout
+        // @ts-ignore
+        timeoutRef1.current = window.setTimeout(() => {
+          // Check if the value hasn't changed in the last 5 seconds
+          // @ts-ignore
+          if (player1LifeChange === lastValueRef1.current) {
+            // @ts-ignore
+            //console.log('Value remained unchanged for 5 seconds:', player1LifeChange)
+            // Your event logic here
+            setPlayer1LifeChange(0)
+          }
+        }, 1600)
+    
+        // Cleanup function
+        return () => {
+            // @ts-ignore
+          if (timeoutRef1.current !== null) {
+            // @ts-ignore
+            clearTimeout(timeoutRef1.current)
+          }
+        }
+        
+      }, [player1LifeChange])
+    
+
     
 
   return (
-    <LifeCounterContext.Provider value={{player1Life, player2Life, reset, incrementPlayer1Life, incrementPlayer2Life, decrementPlayer1Life, decrementPlayer2Life, timer: timeLeft, properTime, setTime, addExtension, pause, pauseTime, resumeTime, stopWatchMode, startStopWatch}}>
+    <LifeCounterContext.Provider value={{player1Life, player2Life, player1LifeChange, player2LifeChange, reset, incrementPlayer1Life, incrementPlayer2Life, decrementPlayer1Life, decrementPlayer2Life, timer: timeLeft, properTime, setTime, addExtension, pause, pauseTime, resumeTime, stopWatchMode, startStopWatch, stopStopWatch}}>
         {children}
     </LifeCounterContext.Provider>
   )

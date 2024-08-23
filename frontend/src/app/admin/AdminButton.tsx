@@ -13,17 +13,17 @@ function AdminButton({sign, player}: {sign: ("plus" | "minus"), player: (1 | 2)}
 
         if(sign === 'plus'){
             if(player === 1){
-                incrementPlayer1Life()
+                incrementPlayer1Life(1)
             } else if(player === 2){
-                incrementPlayer2Life()
+                incrementPlayer2Life(1)
             }
         }
 
         if(sign === 'minus'){
             if(player === 1){
-                decrementPlayer1Life()
+                decrementPlayer1Life(1)
             } else if(player === 2){
-                decrementPlayer2Life()
+                decrementPlayer2Life(1)
             }
         }
     }

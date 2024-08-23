@@ -45,7 +45,6 @@ io.on('connection', socket => {
         time.seconds = Math.floor(parseInt(data)%60)
         time.referenceDate = new Date()
         time.startTime = new Date((time.minutes*60+time.seconds)*1000)
-        stopWatchMode = false
         io.sockets.emit("updateTimer", (time.seconds + time.minutes*60))
     })
 
@@ -84,17 +83,19 @@ io.on('connection', socket => {
     socket.on("startStopWatch", () => {
         console.log("startStopWatch")
         stopWatchMode = true
-        time.minutes = 0
-        time.seconds = 0
+        // time.minutes = 0
+        // time.seconds = 0
         time.referenceDate = new Date()
-        time.startTime = new Date(0)
-        io.sockets.emit("updateTimer", (time.seconds + time.minutes*60))
+        time.startTime = new Date((time.minutes*60+time.seconds)*1000)
+        // io.sockets.emit("updateTimer", (time.seconds + time.minutes*60))
         io.sockets.emit("startStopWatch")
     })
 
     socket.on("stopStopWatch", () => {
         console.log("stopStopWatch")
         stopWatchMode = false
+        time.referenceDate = new Date()
+        time.startTime = new Date((time.minutes*60+time.seconds)*1000)
         io.sockets.emit("stopStopWatch")
     })
    

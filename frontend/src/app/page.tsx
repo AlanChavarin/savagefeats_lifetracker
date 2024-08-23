@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 function LifeCounter() {
 
-    const {player1Life, player2Life, properTime, pause, pauseTime, resumeTime, stopWatchMode } = useContext(LifeCounterContext)
+    const {player1Life, player2Life, player1LifeChange, player2LifeChange, properTime, pause, pauseTime, resumeTime, stopWatchMode } = useContext(LifeCounterContext)
 
     const onClick = () => {
       // pause time here 
@@ -38,13 +38,27 @@ function LifeCounter() {
       <div className="flex relative">
           <div className="bg-[#B85E9F] flex-1 flex flex-col items-center justify-around">
               <Button sign="plus" player={1}/>
-              <div className="text-[13vh] sm:text-[18vh] text-shadow select-none absolute pointer-events-none">{player1Life}</div>
+              <div className="text-[13vh] sm:text-[18vh] text-shadow select-none absolute pointer-events-none">
+                {player1Life}
+                <div className="absolute right-[-64px] top-0 text-[48px]">
+                  {player1LifeChange > 0 && <>+</>}
+                  {player1LifeChange !== 0 && player1LifeChange}
+                </div>
+              </div>
               <Button sign="minus" player={1}/>
+              
           </div>
           <div className="bg-[#5EB877] flex-1 flex flex-col items-center justify-around">
               <Button sign="plus" player={2}/>
-              <div className="text-[13vh] sm:text-[18vh] text-shadow select-none absolute pointer-events-none">{player2Life}</div>
+              <div className="text-[13vh] sm:text-[18vh] text-shadow select-none absolute pointer-events-none">
+                {player2Life}
+                <div className="absolute right-[-64px] top-0 text-[48px]">
+                  {player2LifeChange > 0 && <>+</>}
+                  {player2LifeChange !== 0 && player2LifeChange}
+                </div>
+              </div>
               <Button sign="minus" player={2}/>
+              
           </div>
       </div>
 
@@ -53,12 +67,12 @@ function LifeCounter() {
       </div>
 
       <div className="absolute bottom-0 left-[50%] translate-x-[-50%] flex gap-[16px]">
-        <div className=" pointer-events-none font-sans font-bold text-[16px] text-black">
+        {/* <div className=" pointer-events-none font-sans font-bold text-[16px] text-black">
           {stopWatchMode && <><FontAwesomeIcon icon={faClock}/>&nbsp; STOPWATCH MODE ACTIVE</>}
-        </div>
+        </div> */}
 
-        <div className=" pointer-events-none font-sans font-bold text-[16px] text-red-500">
-          {pause && "TIME IS PAUSED"}
+        <div className="pointer-events-none font-sans font-bold text-[10px] md:text-[16px] text-slate-700">
+          {pause ? "Tap to resume" : "Tap to Pause"}
         </div>
       </div>
 
