@@ -72,7 +72,7 @@ function LifeCounter() {
         </div> */}
 
         <div className="pointer-events-none font-sans font-bold text-[10px] md:text-[16px] text-slate-700">
-          {pause ? "Tap to resume" : "Tap to Pause"}
+          {pause ? "Tap to Resume" : "Tap to Pause"}
         </div>
       </div>
 

@@ -22,6 +22,10 @@ function ResetForm() {
             35′
         </button>
 
+        <button type="submit" onClick={() => {onClick(0)}} className="bg-white hover:bg-slate-100 px-[32px] box-shadow hidden lg:block">
+            0′
+        </button>
+
         <div className="lg:hidden flex flex-row gap-[16px]"> 
             <button type="submit" onClick={() => {onClick(55)}} className="bg-white hover:bg-slate-100 px-[32px] box-shadow">
                 55′
@@ -29,6 +33,10 @@ function ResetForm() {
 
             <button type="submit" onClick={() => {onClick(35)}} className="bg-white hover:bg-slate-100 px-[32px] box-shadow">
                 35′
+            </button>
+
+            <button type="submit" onClick={() => {onClick(0)}} className="bg-white hover:bg-slate-100 px-[32px] box-shadow">
+                0′
             </button>
         </div>
 
