@@ -62,11 +62,12 @@ function LifeCounter() {
           </div>
       </div>
 
-      <div onClick={() => onClick()} className={`bg-white text-[10vh] sm:text-[12vh] md:text-[15vh] flex justify-center absolute bottom-0 left-[50%] translate-x-[-50%] px-[4vw] rounded-t-[16px] md:rounded-t-[32px] box-shadow select-none hover:bg-slate-200 cursor-pointer ${pause ? 'text-red-500' : 'text-black'}`}>
+
+      <div tabIndex={-1} onClick={() => onClick()} className={`bg-white text-[10vh] sm:text-[12vh] md:text-[15vh] flex justify-center absolute bottom-0 left-[50%] translate-x-[-50%] px-[4vw] rounded-t-[16px] md:rounded-t-[32px] box-shadow select-none hover:bg-slate-200 cursor-pointer ${pause ? 'text-red-500' : 'text-black'}`}>
         {properTime}
       </div>
 
-      <div className="absolute bottom-0 left-[50%] translate-x-[-50%] flex gap-[16px]">
+      <div tabIndex={-1} className="absolute bottom-0 left-[50%] translate-x-[-50%] flex gap-[16px]">
         {/* <div className=" pointer-events-none font-sans font-bold text-[16px] text-black">
           {stopWatchMode && <><FontAwesomeIcon icon={faClock}/>&nbsp; STOPWATCH MODE ACTIVE</>}
         </div> */}

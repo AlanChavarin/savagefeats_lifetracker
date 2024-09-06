@@ -17,8 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* @ts-ignore */}
-      <body tabIndex="-1">
+      <body tabIndex={-1}>
         <div className="font-bold font-sans text-[19px] fixed left-0 top-0 z-[1] pointer-events-none">
           Instance: {process.env.NEXT_PUBLIC_INSTANCE}
         </div>
