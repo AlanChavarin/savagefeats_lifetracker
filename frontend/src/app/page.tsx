@@ -35,9 +35,9 @@ function LifeCounter() {
   return (
 
     <div className="relative touch-manipulation select-none" id="page">
-      <div className="absolute top-0 right-0 text-black z-[1]">
+      {/* <div className="absolute top-0 right-0 text-black z-[1]">
         socketid: {socketid}
-      </div>
+      </div> */}
       <div className="flex relative">
           <div className="bg-[#B85E9F] flex-1 flex flex-col items-center justify-around">
               <Button sign="plus" player={1}/>
