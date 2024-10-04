@@ -2,8 +2,11 @@
 import { createContext, useState, useEffect, ReactNode, useRef} from 'react'
 import { z } from 'zod'
 import * as io from 'socket.io-client'
+//import { v4 as uuidv4 } from 'uuid'
 const socket = io.connect(`${process.env.NEXT_PUBLIC_BACKEND}`)
 import useTimer from './useTimer'
+
+// get socketid
 
 interface LifeCounterContextType {
     player1Life: number | undefined,
@@ -25,7 +28,8 @@ interface LifeCounterContextType {
     pause: boolean,
     startStopWatch: () => void,
     stopStopWatch: () => void,
-    stopWatchMode: boolean
+    stopWatchMode: boolean,
+    socketid: string | undefined
 }
 
 let LifeCounterInitValues: LifeCounterContextType = {
@@ -48,7 +52,8 @@ let LifeCounterInitValues: LifeCounterContextType = {
     pause: false,
     startStopWatch: () => null,
     stopStopWatch: () => null,
-    stopWatchMode: false
+    stopWatchMode: false,
+    socketid: undefined
 }
 
 const LifeCounterContext = createContext<LifeCounterContextType>(LifeCounterInitValues)
@@ -59,6 +64,8 @@ interface ProviderProps {
 
 
 export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
+
+    const [socketid, setSocketid] = useState<string | undefined>(undefined)
 
     const {timeLeft, setTimeLeft, properTime, pause, setPause, stopWatchMode, setStopWatchMode} = useTimer()
 
@@ -75,15 +82,15 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
     const reset = (life: number) => {
         setPlayer1Life(life)
         setPlayer2Life(life)
-        socket.emit('updatePlayer1Life', life)
-        socket.emit('updatePlayer2Life', life)
-        
+        socket.emit('updatePlayer1Life', {value: life, socketid: socketid})
+        socket.emit('updatePlayer2Life', {value: life, socketid: socketid})
+
     }
 
     const incrementPlayer1Life = (num: number) => {
         setPlayer1Life(prev => {
             const newValue = (prev ? prev : 0) + num
-            socket.emit('updatePlayer1Life', newValue)
+            socket.emit('updatePlayer1Life', {value: newValue, socketid: socketid})
             return newValue
         })
 
@@ -94,7 +101,7 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
     const incrementPlayer2Life = (num: number) => {
         setPlayer2Life(prev => {
             const newValue = (prev ? prev : 0) + num
-            socket.emit('updatePlayer2Life', newValue)
+            socket.emit('updatePlayer2Life', {value: newValue, socketid: socketid})
             return newValue
         })
 
@@ -104,7 +111,7 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
     const decrementPlayer1Life = (num: number) => {
         setPlayer1Life(prev => {
             const newValue = (prev ? prev : 0) - num
-            socket.emit('updatePlayer1Life', newValue)
+            socket.emit('updatePlayer1Life', {value: newValue, socketid: socketid})
             return newValue
         })
 
@@ -114,7 +121,7 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
     const decrementPlayer2Life = (num: number) => {
         setPlayer2Life(prev => {
             const newValue = (prev ? prev : 0) - num
-            socket.emit('updatePlayer2Life', newValue)
+            socket.emit('updatePlayer2Life', {value: newValue, socketid: socketid})
             return newValue
         })
 
@@ -155,11 +162,42 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
     }
 
     useEffect(() => {
+        setSocketid(socket.id)
+    }, [socket.id])
+
+    // useEffect(() => {
+    //     const handleConnect = () => {
+    //         const newSocketId = socket.id
+    //         setSocketid(newSocketId)
+    //         console.log("Connected with socket ID:", newSocketId)
+    //     }
+
+    //     // If socket is already connected, set the ID immediately
+    //     if (socket.connected) {
+    //         handleConnect()
+    //     }
+
+    //     // Set up listener for future connections
+    //     socket.on('connect', handleConnect)
+
+    //     // Clean up the listener when the component unmounts
+    //     return () => {
+    //         socket.off('connect', handleConnect)
+    //     }
+    // }, [])
+
+
+    useEffect(() => {
+
         socket.on("updatePlayer1Life", (data) => {
-            setPlayer1Life(data)
+            if(data.socketid !== socket.id || data.socketid === undefined){
+                setPlayer1Life(data.value)
+            }
         })
         socket.on("updatePlayer2Life", (data) => {
-            setPlayer2Life(data)
+            if(data.socketid !== socket.id || data.socketid === undefined){
+                setPlayer2Life(data.value)
+            }
         })
         socket.on("updateTimer", (data) => {
             setTimeLeft(data)
@@ -177,8 +215,7 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
             setStopWatchMode(false)
         })
 
-
-    }, [socket.on])
+    }, [socket.on, socketid])
 
 
     const timeoutRef = useRef<number | null>(null)
@@ -270,7 +307,7 @@ export const LifeCounterProvider: React.FC<ProviderProps> = ({children}) => {
     
 
   return (
-    <LifeCounterContext.Provider value={{player1Life, player2Life, player1LifeChange, player2LifeChange, reset, incrementPlayer1Life, incrementPlayer2Life, decrementPlayer1Life, decrementPlayer2Life, timer: timeLeft, properTime, setTime, addExtension, pause, pauseTime, resumeTime, stopWatchMode, startStopWatch, stopStopWatch}}>
+    <LifeCounterContext.Provider value={{player1Life, player2Life, player1LifeChange, player2LifeChange, reset, incrementPlayer1Life, incrementPlayer2Life, decrementPlayer1Life, decrementPlayer2Life, timer: timeLeft, properTime, setTime, addExtension, pause, pauseTime, resumeTime, stopWatchMode, startStopWatch, stopStopWatch, socketid}}>
         {children}
     </LifeCounterContext.Provider>
   )

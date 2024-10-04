@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 function LifeCounter() {
 
-    const {player1Life, player2Life, player1LifeChange, player2LifeChange, properTime, pause, pauseTime, resumeTime, stopWatchMode } = useContext(LifeCounterContext)
+    const {player1Life, player2Life, player1LifeChange, player2LifeChange, properTime, pause, pauseTime, resumeTime, stopWatchMode, socketid } = useContext(LifeCounterContext)
 
     const onClick = () => {
       // pause time here 
@@ -35,6 +35,9 @@ function LifeCounter() {
   return (
 
     <div className="relative touch-manipulation select-none" id="page">
+      <div className="absolute top-0 right-0 text-black z-[1]">
+        socketid: {socketid}
+      </div>
       <div className="flex relative">
           <div className="bg-[#B85E9F] flex-1 flex flex-col items-center justify-around">
               <Button sign="plus" player={1}/>

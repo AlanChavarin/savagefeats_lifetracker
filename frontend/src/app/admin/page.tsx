@@ -41,13 +41,27 @@ function Admin() {
         <div className="flex justify-center items-center gap-[0px] flex-col lg:flex-row">
 
     
+            <div className="hidden lg:flex flex-col items-center bg-[#5EB877] px-[96px] pb-[64px]">
+                <div className="text-[96px] text-shadow relative">
+                    {player2Life}
+                    <div className="absolute right-[-64px] top-0 text-[48px] pointer-events-none">
+                        {player2LifeChange > 0 && <>+</>}
+                        {player2LifeChange !== 0 && player2LifeChange}
+                    </div>
+                </div>
+                <div className="flex gap-[48px]">
+                    <AdminButton sign="plus" player={2}/>
+                    <AdminButton sign="minus" player={2}/>
+                </div>
+            </div>
+
             <div className="hidden lg:flex flex-col items-center bg-[#B85E9F] px-[96px] pb-[64px]">
                 <div className="text-[96px] text-shadow relative">
                     {player1Life}
                     <div className="absolute right-[-64px] top-0 text-[48px]">
                         {player1LifeChange > 0 && <>+</>}
                         {player1LifeChange !== 0 && player1LifeChange}
-                    </div>
+                    </div> 
                 </div>
                 <div className="flex gap-[48px]">
                     <AdminButton sign="plus" player={1}/>
@@ -55,18 +69,16 @@ function Admin() {
                 </div>
             </div>
 
-            <div className="hidden lg:flex flex-col items-center bg-[#5EB877] px-[96px] pb-[64px]">
+            <div className="flex lg:hidden flex-row items-center bg-[#5EB877] p-[32px] gap-[16px] w-full justify-around">
+                <AdminButton sign="plus" player={2}/>
                 <div className="text-[96px] text-shadow relative">
                     {player2Life}
-                    <div className="absolute right-[-64px] top-0 text-[48px]">
+                    <div className="absolute right-[-64px] top-0 text-[48px] pointer-events-none">
                         {player2LifeChange > 0 && <>+</>}
                         {player2LifeChange !== 0 && player2LifeChange}
-                    </div> 
+                    </div>
                 </div>
-                <div className="flex gap-[48px]">
-                    <AdminButton sign="plus" player={2}/>
-                    <AdminButton sign="minus" player={2}/>
-                </div>
+                <AdminButton sign="minus" player={2}/>
             </div>
 
             <div className="flex lg:hidden flex-row items-center bg-[#B85E9F] p-[32px] gap-[16px] w-full justify-around">
@@ -76,21 +88,9 @@ function Admin() {
                     <div className="absolute right-[-64px] top-0 text-[48px]">
                         {player1LifeChange > 0 && <>+</>}
                         {player1LifeChange !== 0 && player1LifeChange}
-                    </div>
-                </div>
-                <AdminButton sign="minus" player={1}/>
-            </div>
-
-            <div className="flex lg:hidden flex-row items-center bg-[#5EB877] p-[32px] gap-[16px] w-full justify-around">
-                <AdminButton sign="plus" player={2}/>
-                <div className="text-[96px] text-shadow relative">
-                    {player2Life}
-                    <div className="absolute right-[-64px] top-0 text-[48px]">
-                        {player2LifeChange > 0 && <>+</>}
-                        {player2LifeChange !== 0 && player2LifeChange}
                     </div>    
                 </div>
-                <AdminButton sign="minus" player={2}/>
+                <AdminButton sign="minus" player={1}/>
             </div>
 
             <div className="py-[24px] lg:py-[0px] lg:px-[128px] lg:min-h-[256px] bg-slate-50 h-full justify-center items-center text-shadow flex flex-row lg:flex-col gap-[32px] w-full lg:w-fit relative">

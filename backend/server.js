@@ -29,14 +29,16 @@ io.on('connection', socket => {
     console.log('a user connected: ' + socket.id)
 
     socket.on("updatePlayer1Life", (data) => {
-        player1Life = parseInt(data)
-        io.sockets.emit("updatePlayer1Life", player1Life)
+        player1Life = parseInt(data.value)
+        console.log(data.socketid)
+        io.sockets.emit("updatePlayer1Life", {value: player1Life, socketid: data.socketid})
         console.log("player1Life updated with value: ", player1Life)
     })
 
     socket.on("updatePlayer2Life", (data) => {
-        player2Life = parseInt(data)
-        io.sockets.emit("updatePlayer2Life", player2Life)
+        player2Life = parseInt(data.value)
+        console.log(data.socketid)
+        io.sockets.emit("updatePlayer2Life", {value: player2Life, socketid: data.socketid})
         console.log("player2Life updated with value: ", player2Life)
     })
 
@@ -50,8 +52,8 @@ io.on('connection', socket => {
 
     socket.on('syncDataWithMe', () => {
         console.log("newConnectionEvent")
-        socket.emit("updatePlayer1Life", player1Life)
-        socket.emit("updatePlayer2Life", player2Life)
+        socket.emit("updatePlayer1Life", {value: player1Life, socketid: undefined})
+        socket.emit("updatePlayer2Life", {value: player2Life, socketid: undefined})
         if(pause){
             socket.emit("pauseTime")
         } else {
